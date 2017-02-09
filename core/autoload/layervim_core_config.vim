@@ -1,5 +1,4 @@
 let s:layervim_layers_dir = '/layers'
-let s:layervim_private_layers_dir = '/private'
 let s:dot_layervim = $HOME.'/.layervim'
 
 let s:layervim_tab = get(s:, 'layervim_tab', -1)
@@ -51,12 +50,10 @@ import vim
 # the directory include public layers and public topics
 # public topic include some public layer, whihc aim to similar goal
 topic_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_layers_dir')
-private_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_private_layers_dir')
 topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and f.startswith('+')]
 public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and not f.startswith('+')]
 topic2layers = {}
-private_layers = [f for f in os.listdir(private_base) if os.path.isdir(os.path.join(private_base,f))]
-layers_sum = len(private_layers)
+layers_sum = 0
 layer_path = {}
 
 # get pubic layer in ~/.layer_vim/layer, which named 'layer'
@@ -76,7 +73,6 @@ for t in topics:
 vim.command("let s:layers_sum = %d" % layers_sum)
 vim.command("let s:topics = %s" % topics)
 vim.command("let s:topic2layers = %s" % topic2layers)
-vim.command("let s:private_layers = %s" % private_layers)
 vim.command("let g:layer_path = %s" % layer_path)
 EOF
 
@@ -308,7 +304,6 @@ function! layervim_core_config#end()
         call Layers()
 
         call s:load_layer_packages()
-        call s:load_private_packages()
 
         call s:filter_and_invoke_plug()
 
@@ -335,7 +330,6 @@ function! layervim_core_config#end()
         runtime! plugin/default.vim
 
         call s:load_layer_config()
-        call s:load_private_config()
 
         call UserConfig()
 
@@ -352,17 +346,6 @@ function! s:filter_and_invoke_plug()
     endfor
 endfunction
 
-" Return the private layer's base dir
-function! s:cur_layer_base_dir(layer)
-
-    " Try the private layers
-    let l:private_layers_base = g:layervim_dir . s:layervim_private_layers_dir
-    if index(s:private_layers, a:layer) > -1
-        return l:private_layers_base . '/'
-    endif
-    return s:err('Layer * ' . a:layer . ' * is invalid, please check it.')
-endfunction
-
 function! s:load_layer_packages()
     let l:layers_loaded = []
     for l:layer in g:layers_loaded
@@ -375,13 +358,6 @@ function! s:load_layer_packages()
     let g:layers_loaded = l:layers_loaded
 endfunction
 
-function! s:load_private_packages()
-    let l:private_packages = g:layervim_dir . '/private/packages.vim'
-    if filereadable(expand(l:private_packages))
-        execute 'source ' . fnameescape(l:private_packages)
-    endif
-endfunction
-
 function! s:load_layer_config()
     for l:layer in g:layers_loaded
         if has_key(g:layer_path, l:layer)
@@ -389,13 +365,6 @@ function! s:load_layer_config()
             call s:Source(l:layer_config)
         endif
     endfor
-endfunction
-
-function! s:load_private_config()
-    let l:private_config = g:layervim_dir . '/private/config.vim'
-    if filereadable(expand(l:private_config))
-        execute 'source ' . fnameescape(l:private_config)
-    endif
 endfunction
 
 function! s:statusline_hi()
