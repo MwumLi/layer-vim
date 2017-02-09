@@ -52,8 +52,8 @@ import vim
 # public topic include some public layer, whihc aim to similar goal
 topic_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_layers_dir')
 private_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_private_layers_dir')
-topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and x.startsWidh('+'))]
-public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and not x.startsWidh('+'))]
+topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and f.startsWidh('+'))]
+public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and not f.startsWidh('+'))]
 topic2layers = {}
 private_layers = [f for f in os.listdir(private_base) if os.path.isdir(os.path.join(private_base,f))]
 layers_sum = len(private_layers)
