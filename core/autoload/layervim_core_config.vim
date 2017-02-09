@@ -365,8 +365,10 @@ endfunction
 
 function! s:load_layer_packages()
     for l:layer in g:layers_loaded
-        let l:layer_packages = g:layer_path[l:layer] . '/packages.vim'
-        call s:Source(l:layer_packages)
+        if has_key(g:layer_path, l:layer)
+            let l:layer_packages = g:layer_path[l:layer] . '/packages.vim'
+            call s:Source(l:layer_packages)
+        endif
     endfor
 endfunction
 
@@ -379,8 +381,10 @@ endfunction
 
 function! s:load_layer_config()
     for l:layer in g:layers_loaded
-        let l:layer_config = g:layer_path[l:layer] . '/config.vim'
-        call s:Source(l:layer_config)
+        if has_key(g:layer_path, l:layer)
+            let l:layer_config = g:layer_path[l:layer] . '/config.vim'
+            call s:Source(l:layer_config)
+        endif
     endfor
 endfunction
 
