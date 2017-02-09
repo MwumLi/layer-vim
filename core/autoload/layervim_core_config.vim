@@ -364,12 +364,15 @@ function! s:cur_layer_base_dir(layer)
 endfunction
 
 function! s:load_layer_packages()
+    let l:layers_loaded = []
     for l:layer in g:layers_loaded
         if has_key(g:layer_path, l:layer)
             let l:layer_packages = g:layer_path[l:layer] . '/packages.vim'
             call s:Source(l:layer_packages)
+            call add(l:layers_loaded, l:layer)
         endif
     endfor
+    let g:layers_loaded = l:layers_loaded
 endfunction
 
 function! s:load_private_packages()
