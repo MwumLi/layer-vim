@@ -44,22 +44,35 @@ function! s:collect_topics() abort
 let py_exe = has('python') ? 'python' : 'python3'
 
 execute py_exe "<< EOF"
+# coding=utf-8
 import os
 import vim
+
+# the directory include public layers and public topics
+# public topic include some public layer, whihc aim to similar goal
 topic_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_layers_dir')
 private_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_private_layers_dir')
-topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f))]
+topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and x.startsWidh('+'))]
+public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f) and not x.startsWidh('+'))]
 topic2layers = {}
 private_layers = [f for f in os.listdir(private_base) if os.path.isdir(os.path.join(private_base,f))]
 layers_sum = len(private_layers)
 layer_path = {}
+
+# get pubic layer in ~/.layer_vim/layer, which named 'layer'
+for l in public_layers:
+    layers_sum += 1
+    layer_path[l] = topic_base + '/' + l
+
+# get topic layer in ~/.layer_vim/layer, which named '+topic/layer'
 for t in topics:
     topic_path = topic_base + '/' + t
     layers = [f for f in os.listdir(topic_path) if os.path.isdir(os.path.join(topic_path,f))]
     layers_sum += len(layers)
     topic2layers[t] = layers
     for l in layers:
-        layer_path[l] = topic_path + '/' + l
+        layer_path[t+'/'+l] = topic_path + '/' + l
+
 vim.command("let s:layers_sum = %d" % layers_sum)
 vim.command("let s:topics = %s" % topics)
 vim.command("let s:topic2layers = %s" % topic2layers)
