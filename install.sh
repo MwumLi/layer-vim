@@ -148,45 +148,7 @@ setup_vim_plug(){
 generate_dot_layervim(){
     if [ ! -f "$dot_layervim" ];
     then
-        touch "$dot_layervim"
-        (
-        cat <<DOTLAYERVIM
-" You can enable the existing layers in layer-vim and
-" exclude the partial plugins in a certain layer.
-" The command Layer and Exlcude are vaild in the function Layers().
-function! Layers()
-
-    " Default layers, recommended!
-    Layer 'fzf'
-    Layer 'unite'
-    Layer 'better-defaults'
-
-endfunction
-
-" Put your private plugins here.
-function! UserInit()
-
-    " Space has been set as the default leader key,
-    " if you want to change it, uncomment and set it here.
-    " let g:layervim_leader = "<\Space>"
-    " let g:layervim_localleader = ','
-
-    " Install private plugins
-    " Plug 'extr0py/oni'
-
-endfunction
-
-" Put your costom configurations here, e.g., change the colorscheme.
-function! UserConfig()
-
-    " If you enable airline layer and have installed the powerline fonts, set it here.
-    " let g:airline_powerline_fonts=1
-    " color desert
-
-endfunction
-DOTLAYERVIM
-) >"$dot_layervim"
-
+        cp $APP_PATH/template/layervim.vim $dot_layervim
     fi
 }
 
@@ -211,4 +173,7 @@ generate_dot_layervim
 
 setup_vim_plug
 
+msg             "Project custom vim configuration:"
+msg             "  1. add the root path of your project to g:layervim_project_root in ~/.layervim"
+msg             "  2. cp ${APP_PATH}/template/project-layervim.vim yourProject/.layervim"
 msg             "\nThanks for installing \033[1;31m$app_name\033[0m. Enjoy!"

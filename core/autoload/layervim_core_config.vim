@@ -297,44 +297,71 @@ function! s:check_dot_layervim()
     endif
 endfunction
 
+function! s:check_project_dot_layervim()
+    if exists('g:layervim_project_root')
+        let l:cur_filepath = fnamemodify(expand('<sfile>'), ':p:h:gs?\\?'.((has('win16') || has('win32') || has('win64'))?'\':'/') . '?')
+        for l:project_root in g:layervim_project_root
+            let l:projec_root = expand('l:projec_root')
+            let l:project_dot_layervim = expand(l:projec_root) . '.layervim'
+            if stridx(l:cur_filepath, l:projec_root) > -1
+                call s:Source(l:project_dot_layervim)
+                return 1
+            endif
+        endfor
+    endif
+    return 0
+endfunction
+
 function! layervim_core_config#end()
 
-    if s:check_dot_layervim()
+    let l:dot_layervim_exist = s:check_dot_layervim()
+    let l:project_dot_layervim_exist = s:check_project_dot_layervim()
 
-        call Layers()
-
-        call s:load_layer_packages()
-
-        call s:filter_and_invoke_plug()
-
-        call UserInit()
-
-        """""""""""""""""""""""""""""""""""""""
-        " Plug ends.
-        """""""""""""""""""""""""""""""""""""""
-        call plug#end()
-
-        if exists('g:layervim_leader')
-            let g:mapleader=g:layervim_leader
-        else
-            let g:mapleader = "\<Space>"
-        endif
-
-        if exists('g:layervim_localleader')
-            let g:maplocalleader=g:layervim_localleader
-        else
-            let g:maplocalleader = ','
-        endif
-
-        " Make vim-better-default settings can be overrided
-        runtime! plugin/default.vim
-
-        call s:load_layer_config()
-
-        call UserConfig()
-
-        call s:post_user_config()
+    if l:dot_layervim_exist
+        call UserLayers()
     endif
+
+    if l:project_dot_layervim_exist
+        call ProjectLayers()
+    endif
+
+    call s:load_layer_packages()
+
+    call s:filter_and_invoke_plug()
+
+    call UserInit()
+
+    """""""""""""""""""""""""""""""""""""""
+    " Plug ends.
+    """""""""""""""""""""""""""""""""""""""
+    call plug#end()
+
+    if exists('g:layervim_leader')
+        let g:mapleader=g:layervim_leader
+    else
+        let g:mapleader = "\<Space>"
+    endif
+
+    if exists('g:layervim_localleader')
+        let g:maplocalleader=g:layervim_localleader
+    else
+        let g:maplocalleader = ','
+    endif
+
+    " Make vim-better-default settings can be overrided
+    runtime! plugin/default.vim
+
+    call s:load_layer_config()
+
+    if l:dot_layervim_exist
+        call UserConfig()
+    endif
+
+    if l:project_dot_layervim_exist
+        call ProjectConfig()
+    endif
+
+    call s:post_user_config()
 
 endfunction
 
