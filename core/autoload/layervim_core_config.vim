@@ -301,9 +301,9 @@ function! s:check_project_dot_layervim()
     if exists('g:layervim_project_root')
         let l:cur_filepath = fnamemodify(expand('<sfile>'), ':p:h:gs?\\?'.((has('win16') || has('win32') || has('win64'))?'\':'/') . '?')
         for l:project_root in g:layervim_project_root
-            let l:projec_root = expand('l:projec_root')
-            let l:project_dot_layervim = expand(l:projec_root) . '.layervim'
-            if stridx(l:cur_filepath, l:projec_root) > -1
+            let l:project_root = expand('l:project_root')
+            let l:project_dot_layervim = expand(l:project_root) . '.layervim'
+            if stridx(l:cur_filepath, l:project_root) > -1
                 call s:Source(l:project_dot_layervim)
                 return 1
             endif

@@ -2,6 +2,12 @@
 " You can enable the existing layers in layer-vim and
 " exclude the partial plugins in a certain layer.
 " The command Layer and Exlcude are vaild in the function UserLayers().
+
+" Set your project root project
+" Project vim configurations :
+"   cp ~/.layer-vim/example/project-layervim.vim youProjectRootPath/.layervim
+let g:layervim_project_root = []
+
 function! UserLayers()
 
     " Command Layer to enable a certain layer
@@ -24,11 +30,6 @@ function! UserInit()
     " if you want to change it, uncomment and set it here.
     " let g:layervim_leader = "<\Space>"
     " let g:layervim_localleader = ','
-
-	" Set your project root project
-    " Project vim configurations :
-    "   cp ~/.layer-vim/example/project-layervim.vim youProjectRootPath/.layervim
-	let g:layervim_project_root = []
 
     " Install private plugins
     " Plug 'extr0py/oni'
