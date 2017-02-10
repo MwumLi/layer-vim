@@ -329,8 +329,9 @@ function! layervim_core_config#end()
 
     call s:filter_and_invoke_plug()
 
-    call UserInit()
-
+    if l:dot_layervim_exist
+        call UserInit()
+    endif
     """""""""""""""""""""""""""""""""""""""
     " Plug ends.
     """""""""""""""""""""""""""""""""""""""
