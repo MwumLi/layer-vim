@@ -105,10 +105,10 @@ layer-vim 底层是对  vim-plug 命令的封装, 因此 vim-plug 的命令都�
 
 ## Todo
 
--[x] support layer: add Layer in `~/.layer-vim`  
--[x] support topic: add topic in `~/.layer-vim/layers`  
--[x] support project configuration: `cp ~/.layer-vim/template/project-layervim.vim projectRoot/.layervim`  
--[ ] add basic layer  
+- [x] support layer: add Layer in `~/.layer-vim`  
+- [x] support topic: add topic in `~/.layer-vim/layers`  
+- [x] support project configuration: `cp ~/.layer-vim/template/project-layervim.vim projectRoot/.layervim`  
+- [ ] add basic layer  
 
 
 ## 致谢
