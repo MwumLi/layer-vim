@@ -36,7 +36,6 @@ function! s:path_resolve(...)
         if s:endswith(l:path, '/')
             let l:path = s:strpart(l:path, 0, strridx(l:path, '/'))
         end
-        echo l:path
         let l:real_path = l:real_path . l:path . '/'
     endfor
 
