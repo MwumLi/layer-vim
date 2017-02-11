@@ -10,6 +10,36 @@ let g:layervim_gui_running = has('gui_running')
 
 let g:layers_loaded = []
 
+" *******Begin******* Define Utils-function
+function! s:endswith(str, end_str)
+    let l:end_position = strridx(a:str, a:end_str) + strlen(a:end_str)
+    let l:len = strlen(a:str)
+    return l:end_position == l:len
+endfunction
+
+function! s:startswith(str, start_str)
+    let l:start_index = strridx(a:str, a:start_str)
+    return l:start_index == 0
+endfunction
+
+function! s:path_resolve(...)
+    let l:real_path = ''
+    for l:path in a:000
+        if s:endswith(l:path, '/')
+            let l:path = strcharpart(l:path, 0, strridx(l:path, '/'))
+        end
+        echo l:path
+        let l:real_path = l:real_path . l:path . '/'
+    endfor
+
+    if a:0 > 0 && endsWith(l:real_path, '/')
+        let l:real_path = strcharpart(l:real_path, 0, strridx(l:real_path, '/'))
+    end
+    echo l:real_path
+endfunction
+
+" ********End****** Define Utils-function
+
 " argument plugin is the vim plugin's name
 function! layervim_core_config#IsDir(plugin) abort
     if isdirectory(expand(g:my_plug_home.a:plugin))
@@ -53,7 +83,7 @@ topic_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_layers_dir')
 topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and f.startswith('+')]
 public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and not f.startswith('+')]
 topic2layers = {}
-layers_sum = 0
+layers_sum = 0;
 layer_path = {}
 
 # get pubic layer in ~/.layer_vim/layer, which named 'layer'
@@ -297,13 +327,20 @@ function! s:check_dot_layervim()
     endif
 endfunction
 
+function! s:get_path_with_no_tailingslash(path)
+    if startswith(path, '/')
+        let a:path = fnamemodify(path, ':p:h')
+    endif
+    echo a:path
+endfunction
+
 function! s:check_project_dot_layervim()
     if exists('g:layervim_project_root')
-        let l:cur_filepath = fnamemodify(expand('<sfile>'), ':p:h:gs?\\?'.((has('win16') || has('win32') || has('win64'))?'\':'/') . '?')
+        let l:cur_filepath = expand('%:p:h')
         for l:project_root in g:layervim_project_root
-            let l:project_root = expand('l:project_root')
-            let l:project_dot_layervim = expand(l:project_root) . '.layervim'
-            if stridx(l:cur_filepath, l:project_root) > -1
+            let l:project_root = s:path_resolve(expand('l:project_root'))
+            let l:project_dot_layervim = s:path_resolve(l:project_root, '.layervim')
+            if stridx(l:cur_filepath, l:project_root) == 0
                 call s:Source(l:project_dot_layervim)
                 return 1
             endif
