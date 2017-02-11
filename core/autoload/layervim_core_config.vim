@@ -34,14 +34,14 @@ function! s:path_resolve(...)
     let l:real_path = ''
     for l:path in a:000
         if s:endswith(l:path, '/')
-            let l:path = exists('*strcharpart') ? strcharpart(l:path, 0, strridx(l:path, '/')) : strchars(l:path, 0, strridx(l:path, '/'))
+            let l:path = s:strpart(l:path, 0, strridx(l:path, '/'))
         end
         echo l:path
         let l:real_path = l:real_path . l:path . '/'
     endfor
 
     if a:0 > 0 && s:endswith(l:real_path, '/')
-        let l:real_path = strcharpart(l:real_path, 0, strridx(l:real_path, '/'))
+        let l:real_path = s:strpart(l:real_path, 0, strridx(l:real_path, '/'))
     end
     return l:real_path
 endfunction
