@@ -22,20 +22,28 @@ function! s:startswith(str, start_str)
     return l:start_index == 0
 endfunction
 
+function! s:strpart(str, start, len)
+    if exists('*strcharpart')
+        return strcharpart(a:str, a:start, a:len)
+    elseif exists('*strpart')
+        return strpart(a:str, a:start, a:len)
+    endif
+endfunction
+
 function! s:path_resolve(...)
     let l:real_path = ''
     for l:path in a:000
         if s:endswith(l:path, '/')
-            let l:path = strcharpart(l:path, 0, strridx(l:path, '/'))
+            let l:path = exists('*strcharpart') ? strcharpart(l:path, 0, strridx(l:path, '/')) : strchars(l:path, 0, strridx(l:path, '/'))
         end
         echo l:path
         let l:real_path = l:real_path . l:path . '/'
     endfor
 
-    if a:0 > 0 && endsWith(l:real_path, '/')
+    if a:0 > 0 && s:endswith(l:real_path, '/')
         let l:real_path = strcharpart(l:real_path, 0, strridx(l:real_path, '/'))
     end
-    echo l:real_path
+    return l:real_path
 endfunction
 
 " ********End****** Define Utils-function
@@ -327,18 +335,11 @@ function! s:check_dot_layervim()
     endif
 endfunction
 
-function! s:get_path_with_no_tailingslash(path)
-    if startswith(path, '/')
-        let a:path = fnamemodify(path, ':p:h')
-    endif
-    echo a:path
-endfunction
-
 function! s:check_project_dot_layervim()
     if exists('g:layervim_project_root')
         let l:cur_filepath = expand('%:p:h')
         for l:project_root in g:layervim_project_root
-            let l:project_root = s:path_resolve(expand('l:project_root'))
+            let l:project_root = s:path_resolve(expand(l:project_root))
             let l:project_dot_layervim = s:path_resolve(l:project_root, '.layervim')
             if stridx(l:cur_filepath, l:project_root) == 0
                 call s:Source(l:project_dot_layervim)
