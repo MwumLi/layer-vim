@@ -1,3 +1,5 @@
+" vi: set ft=vim :
+
 " You can enable the existing layers in layer-vim and
 " exclude the partial plugins in a certain layer.
 " The command Layer and Exlcude are vaild in the function ProjectLayers().

@@ -352,6 +352,11 @@ endfunction
 function! layervim_core_config#end()
 
     let l:dot_layervim_exist = s:check_dot_layervim()
+
+    if l:dot_layervim_exist
+        call UserInit()
+    endif
+
     let l:project_dot_layervim_exist = s:check_project_dot_layervim()
 
     if l:dot_layervim_exist
@@ -366,9 +371,6 @@ function! layervim_core_config#end()
 
     call s:filter_and_invoke_plug()
 
-    if l:dot_layervim_exist
-        call UserInit()
-    endif
     """""""""""""""""""""""""""""""""""""""
     " Plug ends.
     """""""""""""""""""""""""""""""""""""""
