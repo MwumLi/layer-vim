@@ -33,6 +33,9 @@ layer-vim 是一套优雅的的 vim 配置方案, 整个架构基于 Layer 的�
 
 因为我本意是打造一个以 Layer 为基础的 vim 配置架子, 让大家可以良好的组织自己的 vim 配置,并不想提供任何 vim 配置  
 
+但是为了做个示例, 我特意增加了一个 Topic : `+layervim`, 用来展示一个 Topic 以及 Layer 的编写  
+这份配置也会构造一个简单,有效的 vim 的配置  
+
 ## 用户配置文件
 
 用户配置文件就是 `~/.layervim`,一般情况下安装完毕会自己产生, 或者你可以 copy `~/.layer-vim/template/layervim.vim`:  
