@@ -359,6 +359,10 @@ function! layervim_core_config#end()
 
     let l:project_dot_layervim_exist = s:check_project_dot_layervim()
 
+    if l:project_dot_layervim_exist
+        call ProjectInit()
+    endif
+
     if l:dot_layervim_exist
         call UserLayers()
     endif
