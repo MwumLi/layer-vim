@@ -1,4 +1,5 @@
 let s:layervim_layers_dir = '/layers'
+let s:layervim_better_default = '../better-defaul/config.vim'
 let s:dot_layervim = $HOME.'/.layervim'
 
 let s:layervim_tab = get(s:, 'layervim_tab', -1)
@@ -363,6 +364,12 @@ function! layervim_core_config#end()
         call ProjectInit()
     endif
 
+    call s:Source(g:layervim_better_default)
+
+    if filereadable(expand(g:layervim_better_default))
+        execute 'source ' . fnameescape(g:layervim_better_default)
+    endif
+
     if l:dot_layervim_exist
         call UserLayers()
     endif
@@ -393,7 +400,7 @@ function! layervim_core_config#end()
     endif
 
     " Make vim-better-default settings can be overrided
-    runtime! plugin/default.vim
+    " runtime! plugin/default.vim
 
     call s:load_layer_config()
 

@@ -130,6 +130,8 @@ layer-vim 底层是对  vim-plug 命令的封装, 因此 vim-plug 的命令都�
 * [spacemacs]: https://github.com/syl20bnr/spacemacs  
   Emacs 基于 Layer 的配置方案, 并包括众多优秀的 Emacs 配置  
 
+* [使用脚本编写 Vim 编辑器，第 1 部分: 变量、值和表达式]: http://www.ibm.com/developerworks/cn/linux/l-vim-script-1/  
+
 [liuchengxu/space-vim]:  https://github.com/liuchengxu/space-vim
 [space-vim-layer]: https://github.com/liuchengxu/space-vim/tree/master/layers
 [spacemacs]: https://github.com/syl20bnr/spacemacs
