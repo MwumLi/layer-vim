@@ -98,10 +98,10 @@ set backspace=indent,eol,start " Backspace for dummies
   else
     let s:tabstop = 8
   endif
-
-  let &:shiftwidth=s:tabstop    " Nunber of spaces per indent
-  let &:softtabstop=s:tabstop
-  let &:tabstop=s:tabstop       " Number of spaces per <Tab>
+  " http://www.w3cschool.cn/vim/c9lbkozt.html
+  let &shiftwidth=s:tabstop    " Nunber of spaces per indent
+  let &softtabstop=s:tabstop
+  let &tabstop=s:tabstop       " Number of spaces per <Tab>
   set expandtab               " 编辑时将制表符扩展为空格,已存在的文件不会进行这样的替换,如需要,则使用 :retab
   autocmd Filetype markdown set noexpandtab
   set smarttab        " 按一下 Backspace 就删除 4 个空格

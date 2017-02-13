@@ -1,5 +1,5 @@
 let s:layervim_layers_dir = '/layers'
-let s:layervim_better_default = '../better-defaul/config.vim'
+let s:layervim_better_default = '../better-default/config.vim'
 let s:dot_layervim = $HOME.'/.layervim'
 
 let s:layervim_tab = get(s:, 'layervim_tab', -1)
