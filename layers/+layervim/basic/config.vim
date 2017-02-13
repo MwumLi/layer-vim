@@ -103,7 +103,6 @@ set backspace=indent,eol,start " Backspace for dummies
   let &softtabstop=s:tabstop
   let &tabstop=s:tabstop       " Number of spaces per <Tab>
   set expandtab               " 编辑时将制表符扩展为空格,已存在的文件不会进行这样的替换,如需要,则使用 :retab
-  autocmd Filetype markdown set noexpandtab
   set smarttab        " 按一下 Backspace 就删除 4 个空格
 " }
 
@@ -167,11 +166,6 @@ set backspace=indent,eol,start " Backspace for dummies
   set viminfo+=!                 " Viminfo include !
 " }
 
-" 打开一个文件自动定位到上一次退出的位置
-if has("autocmd")
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
 if has('gui_running')
   set guioptions-=r        " Hide the right scrollbar
   set guioptions-=L        " Hide the left scrollbar
@@ -184,6 +178,7 @@ if has('gui_running')
   set visualbell t_vb=
 endif
 
+execute 'source' fnamemodify(expand('<sfile>'), ':h') . '/autocmd.vim'
 execute 'source' fnamemodify(expand('<sfile>'), ':h') . '/keybindings.vim'
 
 let &cpo = s:save_cpo
