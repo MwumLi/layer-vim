@@ -75,7 +75,9 @@ vnoremap v <Esc>
   " <C-w>j -- 跳转至下方的窗口
 " }
 
-nnoremap ; : " Quick command mode
+" Quick command mode
+nnoremap ; :
+
 " Open shell in vim
 " :shell
 
