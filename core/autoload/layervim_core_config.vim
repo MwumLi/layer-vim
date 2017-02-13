@@ -364,7 +364,7 @@ function! layervim_core_config#end()
         call ProjectInit()
     endif
 
-    let l:layervim_better_default = s:path_resolve(g:layervim_layers_dir, s:layervim_better_default)
+    let l:layervim_better_default = s:path_resolve(g:layervim_dir, s:layervim_better_default)
     if filereadable(l:layervim_better_default)
         execute 'source ' . fnameescape(l:layervim_better_default)
     endif
