@@ -184,7 +184,7 @@ if has('gui_running')
   set visualbell t_vb=
 endif
 
-execute "source ./keybindings.vim"
+execute 'source' fnamemodify(expand('<sfile>'), ':h') . '/keybindings.vim'
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

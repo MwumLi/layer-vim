@@ -1,5 +1,5 @@
 let s:layervim_layers_dir = '/layers'
-let s:layervim_better_default = '../better-default/config.vim'
+let s:layervim_better_default = '/core/better-default'
 let s:dot_layervim = $HOME.'/.layervim'
 
 let s:layervim_tab = get(s:, 'layervim_tab', -1)
@@ -364,8 +364,9 @@ function! layervim_core_config#end()
         call ProjectInit()
     endif
 
-    if filereadable(s:layervim_better_default)
-        execute 'source ' . fnameescape(s:layervim_better_default)
+    let l:layervim_better_default = s:path_resolve(g:layervim_layers_dir, s:layervim_better_default)
+    if filereadable(l:layervim_better_default)
+        execute 'source ' . fnameescape(l:layervim_better_default)
     endif
 
     if l:dot_layervim_exist
