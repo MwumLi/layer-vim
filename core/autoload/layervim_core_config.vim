@@ -364,10 +364,8 @@ function! layervim_core_config#end()
         call ProjectInit()
     endif
 
-    call s:Source(g:layervim_better_default)
-
-    if filereadable(expand(g:layervim_better_default))
-        execute 'source ' . fnameescape(g:layervim_better_default)
+    if filereadable(s:layervim_better_default)
+        execute 'source ' . fnameescape(s:layervim_better_default)
     endif
 
     if l:dot_layervim_exist
