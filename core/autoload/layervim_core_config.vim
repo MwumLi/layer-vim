@@ -364,7 +364,19 @@ function! layervim_core_config#end()
         call ProjectInit()
     endif
 
-    let l:layervim_better_default = s:path_resolve(g:layervim_dir, s:layervim_better_default)
+    if exists('g:layervim_leader')
+        let g:mapleader=g:layervim_leader
+    else
+        let g:mapleader = "\<Space>"
+    endif
+
+    if exists('g:layervim_localleader')
+        let g:maplocalleader=g:layervim_localleader
+    else
+        let g:maplocalleader = ','
+    endif
+
+    let l:layervim_better_default = s:path_resolve(g:layervim_dir, s:layervim_better_default, 'config.vim')
     if filereadable(l:layervim_better_default)
         execute 'source ' . fnameescape(l:layervim_better_default)
     endif
@@ -385,18 +397,6 @@ function! layervim_core_config#end()
     " Plug ends.
     """""""""""""""""""""""""""""""""""""""
     call plug#end()
-
-    if exists('g:layervim_leader')
-        let g:mapleader=g:layervim_leader
-    else
-        let g:mapleader = "\<Space>"
-    endif
-
-    if exists('g:layervim_localleader')
-        let g:maplocalleader=g:layervim_localleader
-    else
-        let g:maplocalleader = ','
-    endif
 
     " Make vim-better-default settings can be overrided
     " runtime! plugin/default.vim
