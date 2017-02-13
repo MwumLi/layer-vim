@@ -27,7 +27,7 @@ set backspace=indent,eol,start " Backspace for dummies
   set linespace=0         " No extra spaces between rows
   set ruler               " 右下角显示光标的行列信息
   set cursorline          " 行光标线
-  set cursorcolumn        " 列光标线
+"  set cursorcolumn        " 列光标线
   set laststatus=2        " 总是显示状态栏
   set showmatch           " 当光标移动到一个括号时高亮显示对应的另一个括号
   set showcmd             " 回显输入的命令
