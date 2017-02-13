@@ -11,7 +11,7 @@ function! ProjectInit()
 
     " Space has been set as the default leader key,
     " if you want to change it, uncomment and set it here.
-    " let g:layervim_leader = "<\Space>"
+    " let g:layervim_leader = "\<Space>"
     " let g:layervim_localleader = ','
 
     " Set your project root project

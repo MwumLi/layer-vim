@@ -10,8 +10,18 @@ function! UserInit()
 
     " Space has been set as the default leader key,
     " if you want to change it, uncomment and set it here.
-    " let g:layervim_leader = "<\Space>"
+    " let g:layervim_leader = "\<Space>"
     " let g:layervim_localleader = ','
+
+    " enable mouse
+    let g:layervim_better_default_enable_mouse = 1
+    " use undo
+    let g:layervim_better_default_persistent_undo = 1
+    " tas as 4 spaces
+    let g:layervim_better_default_tab_as_spaces = 4
+    " default enable wrap
+    " if didable wrap, uncomment it
+    " let g:layervim_better_default_no_wrap = 1
 
     " Set your project root project
     " Project vim configurations :
@@ -24,11 +34,6 @@ function! UserLayers()
 
     " Command Layer to enable a certain layer
     " Layer 'fzf'
-
-    " Default layers, recommended!
-    Layer 'fzf'
-    Layer 'unite'
-    Layer 'better-defaults'
 
     "Command Exclude to disable the partial plugins in a certain layer
     " Exclude 'extr0py/oni'
