@@ -1,2 +1,2 @@
 " More theme: http://vimcolors.com/
-MP 'sickill/vim-monokai'
+MP 'MwumLi/vim-molokai'
