@@ -39,6 +39,8 @@ set backspace=indent,eol,start " Backspace for dummies
   set ttyfast             " Faster redrawing
   set fileformats=unix,dos,mac    " 设置文件类型
   set listchars=tab:→\ ,eol:↵,trail:·,extends:↷,precedes:↶
+  " http://stackoverflow.com/questions/6427650/vim-in-tmux-background-color-changes-when-paging/15095377#15095377
+  set t_ut=
 " }
 
 " http://blog.csdn.net/softmanfly/article/details/50490391
@@ -85,7 +87,6 @@ set backspace=indent,eol,start " Backspace for dummies
   set smartcase   " 如果搜索字符串里包含大写字母，则禁用 ignorecase
   set hlsearch    " 高亮显示搜索结果
   set incsearch   " 开启实时搜索
-  set wildmenu    " 开启 Vim 自身命令行模式智能补全
 " }
 
 " indent {
@@ -152,6 +153,11 @@ set backspace=indent,eol,start " Backspace for dummies
   endif
 " }
 
+" cmdline {
+  set wildmenu    " 开启 Vim 自身命令行模式智能补全
+  set wildmode=list:longest,full " http://vimcdoc.sourceforge.net/doc/options.html#'wildmode'
+" }
+
 " other {
   set shortmess=atOI             " 启动时不显示捐助乌干达儿童的提示
   set autoread                   " Automatically read a file changed outside of vim
@@ -160,6 +166,11 @@ set backspace=indent,eol,start " Backspace for dummies
   set history=10000              " Maximum history record
   set viminfo+=!                 " Viminfo include !
 " }
+
+" 打开一个文件自动定位到上一次退出的位置
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 if has('gui_running')
   set guioptions-=r        " Hide the right scrollbar
