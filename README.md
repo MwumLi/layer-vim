@@ -111,7 +111,9 @@ layer-vim 底层是对  vim-plug 命令的封装, 因此 vim-plug 的命令都�
 - [x] support layer: add Layer in `~/.layer-vim`  
 - [x] support topic: add topic in `~/.layer-vim/layers`  
 - [x] support project configuration: `cp ~/.layer-vim/template/project-layervim.vim projectRoot/.layervim`  
-- [ ] add basic layer  
+- [X] add basic layer  
+- [X] support add the whole topic: `Topic "+layervim"`  
+- [X] support external layer: You can maintain your own layer repository  
 
 
 ## 致谢

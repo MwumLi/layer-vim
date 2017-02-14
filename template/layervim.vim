@@ -32,6 +32,9 @@ endfunction
 
 function! UserLayers()
 
+    " Default to load topic : '+layervim'
+    Topic '+layervim'
+
     " Command Layer to enable a certain layer
     " Layer 'fzf'
 
