@@ -1,16 +1,3 @@
-let s:layervim_layers_dir = '/layers'
-let s:dot_layervim = $HOME.'/.layervim'
-
-let s:layervim_tab = get(s:, 'layervim_tab', -1)
-let s:layervim_buf = get(s:, 'layervim_buf', -1)
-
-let g:layervim_nvim = has('nvim') && exists('*jobwait') && !g:WINDOWS
-let g:layervim_vim8 = has('patch-8.0.0039') && exists('*job_start')
-let g:layervim_gui_running = has('gui_running')
-
-let g:layers_loaded = []
-let s:topics_loaded = []
-
 " *******Begin******* Define Utils-function
 function! s:endswith(str, end_str)
     let l:end_position = strridx(a:str, a:end_str) + strlen(a:end_str)
@@ -47,6 +34,26 @@ function! s:path_resolve(...)
 endfunction
 
 " ********End****** Define Utils-function
+
+" ********Begin**** Define Script variable and global variabl
+let s:layervim_layers_dir = s:path_resolve(g:layervim_dir, 'layers')
+if exists("$LAYERVIM_LAYERS_DIR")
+    let s:layervim_layers_dir = $LAYERVIM_LAYERS_DIR
+endif
+
+let s:dot_layervim = s:path_resolve($HOME, '.layervim')
+
+let s:layervim_tab = get(s:, 'layervim_tab', -1)
+let s:layervim_buf = get(s:, 'layervim_buf', -1)
+
+let g:layervim_nvim = has('nvim') && exists('*jobwait') && !g:WINDOWS
+let g:layervim_vim8 = has('patch-8.0.0039') && exists('*job_start')
+let g:layervim_gui_running = has('gui_running')
+
+let g:layers_loaded = []
+let s:topics_loaded = []
+
+" ********End**** Define Script variable and global variabl
 
 " argument plugin is the vim plugin's name
 function! layervim_core_config#IsDir(plugin) abort
@@ -95,7 +102,7 @@ import vim
 
 # the directory include public layers and public topics
 # public topic include some public layer, whihc aim to similar goal
-topic_base = vim.eval('g:layervim_dir') + vim.eval('s:layervim_layers_dir')
+topic_base = vim.eval('s:layervim_layers_dir')
 topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and f.startswith('+')]
 public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and not f.startswith('+')]
 topic2layers = {}
@@ -202,7 +209,7 @@ function! s:add_topic(...)
             return 0
         endif
 
-        let l:topic_path = s:path_resolve(g:layervim_dir, s:layervim_layers_dir, l:topic_name, 'topic.vim')
+        let l:topic_path = s:path_resolve(s:layervim_layers_dir, l:topic_name, 'topic.vim')
         if !s:source(l:topic_path)
             let l:topic_layers = s:topic2layers[eval(a:1)]
             for l:layer_name in l:topic_layers

@@ -5,9 +5,17 @@
 
 app_name='layer-vim'
 dot_layervim="$HOME/.layervim"
-[ -z "$APP_PATH" ] && APP_PATH="$HOME/.layer-vim"
-[ -z "$REPO_URI" ] && REPO_URI='https://github.com/MwumLi/layer-vim.git'
-[ -z "$REPO_BRANCH" ] && REPO_BRANCH='master'
+[ -z "$LAYERVIM_PATH" ] && LAYERVIM_PATH="$HOME/.layer-vim"
+[ -z "$LAYERVIM_REPO_URI" ] && LAYERVIM_REPO_URI='https://github.com/MwumLi/layer-vim.git'
+[ -z "$LAYERVIM_REPO_BRANCH" ] && LAYERVIM_REPO_BRANCH='master'
+
+# Single layervim layers
+# if there is a single layers repository. so you need LAYERVIM_LAYERS_PATH to
+# store layers locally and LAYERVIM_LAYERS_REPO_URI
+[ -z "$LAYERVIM_LAYERS_PATH" ] && LAYERVIM_LAYERS_PATH="$HOME/.layer-vim/layers"
+# LAYERVIM_LAYERS_REPO_URI
+[ -z "$LAYERVIM_LAYERS_REPO_BRANCH" ] && LAYERVIM_LAYERS_REPO_BRANCH='master'
+
 debug_mode='0'
 [ -z "$VIM_PLUG_PATH" ] && VIM_PLUG_PATH="$HOME/.vim/autoload"
 [ -z "$VIM_PLUG_URL" ] && VIM_PLUG_URL='https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -148,7 +156,7 @@ setup_vim_plug(){
 generate_dot_layervim(){
     if [ ! -f "$dot_layervim" ];
     then
-        cp $APP_PATH/template/layervim.vim $dot_layervim
+        cp $LAYERVIM_PATH/template/layervim.vim $dot_layervim
     fi
 }
 
@@ -158,12 +166,20 @@ program_must_exist "git"
 
 backup          "$HOME/.vimrc"
 
-sync_repo       "$APP_PATH" \
-                "$REPO_URI" \
-                "$REPO_BRANCH" \
+sync_repo       "$LAYERVIM_PATH" \
+                "$LAYERVIM_REPO_URI" \
+                "$LAYERVIM_REPO_BRANCH" \
                 "$app_name"
 
-create_symlinks "$APP_PATH" \
+if [ -z "$LAYERVIM_LAYERS_REPO_URI" ];
+then
+    sync_repo       "$LAYERVIM_LAYERS_PATH" \
+                    "$LAYERVIM_LAYERS_REPO_URI" \
+                    "$LAYERVIM_LAYERS_REPO_BRANCH" \
+                    "layers repository"
+fi
+
+create_symlinks "$LAYERVIM_PATH" \
                 "$HOME"
 
 sync_vim_plug   "$VIM_PLUG_PATH" \
@@ -175,5 +191,5 @@ setup_vim_plug
 
 msg             "Project custom vim configuration:"
 msg             "  1. add the root path of your project to g:layervim_project_root in ~/.layervim"
-msg             "  2. cp ${APP_PATH}/template/project-layervim.vim yourProject/.layervim"
+msg             "  2. cp ${LAYERVIM_PATH}/template/project-layervim.vim yourProject/.layervim"
 msg             "\nThanks for installing \033[1;31m$app_name\033[0m. Enjoy!"
