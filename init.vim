@@ -36,6 +36,9 @@ let g:layervim_version = '0.5.0'
 
 set runtimepath+=$HOME/.layer-vim/core
 
+" load public global function from lib
+execute "source " . g:layervim_dir . '/lib/functions.vim'
+
 call layervim_core_config#begin()
 
 call layervim_core_config#end()

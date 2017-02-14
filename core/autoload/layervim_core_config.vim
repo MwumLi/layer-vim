@@ -1,47 +1,10 @@
-" *******Begin******* Define Utils-function
-function! s:endswith(str, end_str)
-    let l:end_position = strridx(a:str, a:end_str) + strlen(a:end_str)
-    let l:len = strlen(a:str)
-    return l:end_position == l:len
-endfunction
-
-function! s:startswith(str, start_str)
-    let l:start_index = strridx(a:str, a:start_str)
-    return l:start_index == 0
-endfunction
-
-function! s:strpart(str, start, len)
-    if exists('*strcharpart')
-        return strcharpart(a:str, a:start, a:len)
-    elseif exists('*strpart')
-        return strpart(a:str, a:start, a:len)
-    endif
-endfunction
-
-function! s:path_resolve(...)
-    let l:real_path = ''
-    for l:path in a:000
-        if s:endswith(l:path, '/')
-            let l:path = s:strpart(l:path, 0, strridx(l:path, '/'))
-        end
-        let l:real_path = l:real_path . l:path . '/'
-    endfor
-
-    if a:0 > 0 && s:endswith(l:real_path, '/')
-        let l:real_path = s:strpart(l:real_path, 0, strridx(l:real_path, '/'))
-    end
-    return l:real_path
-endfunction
-
-" ********End****** Define Utils-function
-
 " ********Begin**** Define Script variable and global variabl
-let s:layervim_layers_dir = s:path_resolve(g:layervim_dir, 'layers')
+let s:layervim_layers_dir = PathResolve(g:layervim_dir, 'layers')
 if exists("$LAYERVIM_LAYERS_PATH")
     let s:layervim_layers_dir = $LAYERVIM_LAYERS_PATH
 endif
 
-let s:dot_layervim = s:path_resolve($HOME, '.layervim')
+let s:dot_layervim = PathResolve($HOME, '.layervim')
 
 let s:layervim_tab = get(s:, 'layervim_tab', -1)
 let s:layervim_buf = get(s:, 'layervim_buf', -1)
@@ -57,7 +20,7 @@ let s:topics_loaded = []
 
 " argument plugin is the vim plugin's name
 function! layervim_core_config#IsDir(plugin) abort
-    let l:plugin_path = s:path_resolve(g:layervim_plugin_path, a:plugin)
+    let l:plugin_path = PathResolve(g:layervim_plugin_path, a:plugin)
     if isdirectory(expand(l:plugin_path))
         return 1
     else
@@ -173,7 +136,7 @@ function! layervim_core_config#begin()
             " https://github.com/junegunn/vim-plug/issues/559
             let g:layervim_plugin_path = '~/.local/shared/nvim/plugged'
         else
-            let g:layervim_plugin_path = s:path_resolve(s:vim_home, 'plugged')
+            let g:layervim_plugin_path = PathResolve(s:vim_home, 'plugged')
         endif
     endif
 
@@ -210,8 +173,8 @@ function! s:add_topic(...)
             return 0
         endif
 
-        let l:topic_path = s:path_resolve(s:layervim_layers_dir, l:topic_name, 'topic.vim')
-        if !s:source(l:topic_path)
+        let l:topic_path = PathResolve(s:layervim_layers_dir, l:topic_name, 'topic.vim')
+        if !Source(l:topic_path)
             let l:topic_layers = s:topic2layers[eval(a:1)]
             for l:layer_name in l:topic_layers
                 let l:cmd = "Layer '" . l:topic_name . '/' . l:layer_name . "'"
@@ -244,13 +207,6 @@ let s:TYPE = {
             \   'funcref': type(function('call'))
             \ }
 
-function! s:to_string(list)
-    let str = ''
-    for i in a:list
-        let str .= i
-    endfor
-    return str
-endfunction
 
 let g:layervim_elements = []
 
@@ -258,7 +214,7 @@ function! s:add_element(...)
     if a:0 == 0
         return s:err('Argument missing: element name(s) required.')
     else
-        let l:str = s:to_string(a:000)
+        let l:str = List2String(a:000)
         if index(g:layervim_elements, l:str) < 0
             call add(g:layervim_elements, l:str)
         endif
@@ -270,7 +226,7 @@ function! s:exclude_elements(...)
     if a:0 == 0
         return s:err('Argument missing: element name(s) required.')
     else
-        let l:str = s:to_string(a:000)
+        let l:str = List2String(a:000)
         call add(g:layervim_exclude, l:str)
     endif
 endfunction
@@ -387,8 +343,8 @@ function! s:check_project_dot_layervim()
     if exists('g:layervim_project_root')
         let l:cur_filepath = expand('%:p:h')
         for l:project_root in g:layervim_project_root
-            let l:project_root = s:path_resolve(expand(l:project_root))
-            let l:project_dot_layervim = s:path_resolve(l:project_root, '.layervim')
+            let l:project_root = PathResolve(expand(l:project_root))
+            let l:project_dot_layervim = PathResolve(l:project_root, '.layervim')
             if stridx(l:cur_filepath, l:project_root) == 0
                 call s:source_echom(l:project_dot_layervim)
                 return 1
