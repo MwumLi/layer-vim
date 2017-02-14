@@ -52,11 +52,6 @@ nnoremap <Leader>fs :update<CR>
   cnoremap <C-d> <Delete>
 " }
 
-
-" escaping - Cttrl+c
-inoremap <ESc> <C-c>
-cnoremap <Esc> <C-c>
-
 " Quit visual mode
 vnoremap v <Esc>
 
