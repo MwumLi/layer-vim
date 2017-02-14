@@ -9,6 +9,7 @@ let g:layervim_vim8 = has('patch-8.0.0039') && exists('*job_start')
 let g:layervim_gui_running = has('gui_running')
 
 let g:layers_loaded = []
+let s:topics_loaded = []
 
 " *******Begin******* Define Utils-function
 function! s:endswith(str, end_str)
@@ -64,12 +65,20 @@ function! layervim_core_config#LayerLoaded(layer) abort
     endif
 endfunction
 
-silent function! s:Source(file) abort
+silent function! s:source_echom(file) abort
     if filereadable(expand(a:file))
         execute 'source ' . fnameescape(a:file)
     else
-        echom '[space-vim] ' . a:file . ' does not exist, which may cause unexpected errors.'
+        echom '[layer-vim] ' . a:file . ' does not exist, which may cause unexpected errors.'
     endif
+endfunction
+
+silent function! s:source(file) abort
+    if filereadable(expand(a:file))
+        execute 'source ' . fnameescape(a:file)
+        return 1
+    endif
+    return 0
 endfunction
 
 " get the whole available layers number s:layers_sum, number
@@ -167,6 +176,7 @@ function! layervim_core_config#begin()
 endfunction
 
 function! s:define_command()
+    command! -nargs=+ -bar Topic call s:add_topic(<f-args>)
     command! -nargs=+ -bar Layer call s:add_layer(<f-args>)
 
     " MP means MyPlugin
@@ -180,11 +190,40 @@ function! s:define_command()
     command! -nargs=0 -bar LayerInstall call s:layer_install()
 endfunction
 
+function! s:add_topic(...)
+    if a:0 == 0
+        return s:err('Argument missing: Topic name(s) required.')
+    endif
+
+    if a:0 == 1
+        let l:topic_name = eval(a:1)
+        if index(keys(s:topic2layers), l:topic_name) < 0 ||
+                    \ index(s:topics_loaded, l:topic_name) >= 0
+            return 0
+        endif
+
+        let l:topic_path = s:path_resolve(g:layervim_dir, s:layervim_layers_dir, l:topic_name, 'topic.vim')
+        if !s:source(l:topic_path)
+            let l:topic_layers = s:topic2layers[eval(a:1)]
+            for l:layer_name in l:topic_layers
+                let l:cmd = "Layer '" . l:topic_name . '/' . l:layer_name . "'"
+                execute l:cmd
+            endfor
+        endif
+        call add(s:topics_loaded, l:topic_name)
+        return 1
+    endif
+
+    call s:err('Options not supported now. Sorry for that.')
+endfunction
+
 function! s:add_layer(...)
     if a:0 == 0
         return s:err('Argument missing: layer name(s) required.')
     elseif a:0 == 1
-        call add(g:layers_loaded, eval(a:1))
+        if index(g:layers_loaded, eval(a:1)) < 0
+            call add(g:layers_loaded, eval(a:1))
+        endif
     else
         call s:err('Options not supported now. Sorry for that.')
     endif
@@ -212,7 +251,9 @@ function! s:add_element(...)
         return s:err('Argument missing: element name(s) required.')
     else
         let l:str = s:to_string(a:000)
-        call add(g:layervim_elements, l:str)
+        if index(g:layervim_elements, l:str) < 0
+            call add(g:layervim_elements, l:str)
+        endif
     endif
 endfunction
 
@@ -326,7 +367,7 @@ endfunction
 
 function! s:check_dot_layervim()
     if filereadable(expand(s:dot_layervim))
-        call s:Source(s:dot_layervim)
+        call s:source_echom(s:dot_layervim)
         return 1
     else
         echom '.layervim does not exist!!!'
@@ -341,7 +382,7 @@ function! s:check_project_dot_layervim()
             let l:project_root = s:path_resolve(expand(l:project_root))
             let l:project_dot_layervim = s:path_resolve(l:project_root, '.layervim')
             if stridx(l:cur_filepath, l:project_root) == 0
-                call s:Source(l:project_dot_layervim)
+                call s:source_echom(l:project_dot_layervim)
                 return 1
             endif
         endfor
@@ -416,7 +457,7 @@ endfunction
 function! s:filter_and_invoke_plug()
     for e in g:layervim_elements
         if !(index(g:layervim_exclude, split(e, ',')[0]) > -1)
-            execute 'Plug' . e
+            execute 'Plug ' . e
         endif
     endfor
 endfunction
@@ -426,7 +467,7 @@ function! s:load_layer_packages()
     for l:layer in g:layers_loaded
         if has_key(g:layer_path, l:layer)
             let l:layer_packages = g:layer_path[l:layer] . '/packages.vim'
-            call s:Source(l:layer_packages)
+            call s:source_echom(l:layer_packages)
             call add(l:layers_loaded, l:layer)
         endif
     endfor
@@ -437,7 +478,7 @@ function! s:load_layer_config()
     for l:layer in g:layers_loaded
         if has_key(g:layer_path, l:layer)
             let l:layer_config = g:layer_path[l:layer] . '/config.vim'
-            call s:Source(l:layer_config)
+            call s:source_echom(l:layer_config)
         endif
     endfor
 endfunction

@@ -38,7 +38,9 @@ set runtimepath+=$HOME/.layer-vim/core
 
 call layervim_core_config#begin()
 
-Layer '+layervim/basic'
+"Layer '+layervim/basic'
 Layer '+layervim/theme'
+
+Topic '+layervim'
 
 call layervim_core_config#end()
