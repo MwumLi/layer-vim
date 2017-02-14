@@ -57,7 +57,8 @@ let s:topics_loaded = []
 
 " argument plugin is the vim plugin's name
 function! layervim_core_config#IsDir(plugin) abort
-    if isdirectory(expand(g:my_plug_home.a:plugin))
+    let l:plugin_path = s:path_resolve(g:layervim_plugin_path, a:plugin)
+    if isdirectory(expand(l:plugin_path))
         return 1
     else
         return 0
@@ -167,16 +168,16 @@ function! layervim_core_config#begin()
 
     let s:vim_home = $HOME.'/.vim/'
 
-    if !exists('g:my_plug_home')
+    if !exists('g:layervim_plugin_path')
         if g:layervim_nvim
             " https://github.com/junegunn/vim-plug/issues/559
-            let g:my_plug_home = '~/.local/shared/nvim/plugged'
+            let g:layervim_plugin_path = '~/.local/shared/nvim/plugged'
         else
-            let g:my_plug_home = s:vim_home.'plugged/'
+            let g:layervim_plugin_path = s:path_resolve(s:vim_home, 'plugged')
         endif
     endif
 
-    call plug#begin(g:my_plug_home)
+    call plug#begin(g:layervim_plugin_path)
 
     call s:define_command()
 
