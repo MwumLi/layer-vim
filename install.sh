@@ -171,7 +171,7 @@ sync_repo       "$LAYERVIM_PATH" \
                 "$LAYERVIM_REPO_BRANCH" \
                 "$app_name"
 
-if [ -z "$LAYERVIM_LAYERS_REPO_URI" ];
+if [ -n "$LAYERVIM_LAYERS_REPO_URI" ];
 then
     sync_repo       "$LAYERVIM_LAYERS_PATH" \
                     "$LAYERVIM_LAYERS_REPO_URI" \

@@ -37,8 +37,8 @@ endfunction
 
 " ********Begin**** Define Script variable and global variabl
 let s:layervim_layers_dir = s:path_resolve(g:layervim_dir, 'layers')
-if exists("$LAYERVIM_LAYERS_DIR")
-    let s:layervim_layers_dir = $LAYERVIM_LAYERS_DIR
+if exists("$LAYERVIM_LAYERS_PATH")
+    let s:layervim_layers_dir = $LAYERVIM_LAYERS_PATH
 endif
 
 let s:dot_layervim = s:path_resolve($HOME, '.layervim')
