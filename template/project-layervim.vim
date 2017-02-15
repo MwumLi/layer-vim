@@ -17,16 +17,48 @@ function! ProjectInit()
     " Set your project root project
     " Project vim configurations :
     "   cp ~/.layer-vim/example/project-layervim.vim youProjectRootPath/.layervim
-    let g:layervim_project_root = []
+    "let g:layervim_project_root = []
+
+    " Space has been set as the default leader key,
+    " if you want to change it, uncomment and set it here.
+    " let g:layervim_leader = "\<Space>"
+    " let g:layervim_localleader = ','
+
+    " enable mouse
+    " let g:layervim_better_default_enable_mouse = 1
+    " use undo
+    " let g:layervim_better_default_persistent_undo = 1
+    " tas as 4 spaces
+    " let g:layervim_better_default_tab_as_spaces = 4
+    " default enable wrap
+    " if didable wrap, uncomment it
+    " let g:layervim_better_default_no_wrap = 1
+
+    " Set your project root project
+    " Project vim configurations :
+    "   cp ~/.layer-vim/example/project-layervim.vim youProjectRootPath/.layervim
+    "let g:layervim_project_root = []
 
 endfunction
 
 function! ProjectLayers()
 
-    " Command Layer to enable a certain layer
+    " Enable a certain topic
+    " Topic '+layervim'
+
+    " Exclude a certain topic
+    " ETopic ''+layervim
+
+    " Enable a certain layer
     " Layer 'fzf'
 
-    "Command Exclude to disable the partial plugins in a certain layer
+    " Exclude a certain layer
+    " ELayer 'fzf'
+
+    " Enable a certain vim plugin
+    " Plugin 'extr0py/oni'
+
+    " Exclude a certaine vim plugin
     " Exclude 'extr0py/oni'
 
 endfunction

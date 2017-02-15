@@ -33,16 +33,23 @@ endfunction
 function! UserLayers()
 
     " Default to load topic : '+layervim'
+    " Enable a certain topic
     Topic '+layervim'
 
-    " Command Layer to enable a certain layer
+    " Exclude a certain topic
+    " ETopic ''+layervim
+
+    " Enable a certain layer
     " Layer 'fzf'
 
-    "Command Exclude to disable the partial plugins in a certain layer
-    " Exclude 'extr0py/oni'
+    " Exclude a certain layer
+    " ELayer 'fzf'
 
-    " Install private plugins
-    " Plug 'extr0py/oni'
+    " Enable a certain vim plugin
+    " Plugin 'extr0py/oni'
+
+    " Exclude a certaine vim plugin
+    " Exclude 'extr0py/oni'
 
 endfunction
 

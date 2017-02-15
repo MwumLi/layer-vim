@@ -32,7 +32,7 @@ endif
 
 let g:layervim_dir = $HOME.'/.layer-vim'
 let g:layervim_core_dir = '/core'
-let g:layervim_version = '0.5.0'
+let g:layervim_version = '1.0.0'
 
 set runtimepath+=$HOME/.layer-vim/core
 

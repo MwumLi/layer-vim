@@ -68,7 +68,7 @@ import vim
 # public topic include some public layer, whihc aim to similar goal
 topic_base = vim.eval('s:layervim_layers_dir')
 topics = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and f.startswith('+')]
-public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and not f.startswith('+')]
+public_layers = [f for f in os.listdir(topic_base) if os.path.isdir(os.path.join(topic_base,f)) and not f.startswith('+') and not f.startswith('.')]
 topic2layers = {}
 layers_sum = 0;
 layer_path = {}
@@ -147,13 +147,14 @@ function! layervim_core_config#begin()
 endfunction
 
 function! s:define_command()
-    command! -nargs=+ -bar Topic call s:add_topic(<f-args>)
-    command! -nargs=+ -bar Layer call s:add_layer(<f-args>)
+    command! -nargs=+ -bar Topic call s:include_topic(<f-args>)
+    command! -nargs=+ -bar ETopic call s:exclude_topic(<f-args>)
 
-    " MP means MyPlugin
-    command! -nargs=+ -bar MP call s:add_element(<f-args>)
+    command! -nargs=+ -bar Layer call s:include_layer(<f-args>)
+    command! -nargs=+ -bar ELayer call s:exclude_layer(<f-args>)
 
-    command! -nargs=+ -bar Exclude call s:exclude_elements(<f-args>)
+    command! -nargs=+ -bar Plugin call s:include_plugin(<f-args>)
+    command! -nargs=+ -bar EPlugin call s:exclude_plugin(<f-args>)
 
     command! -nargs=0 -bar LayerClean call s:layer_clean()
     command! -nargs=0 -bar LayerStatus call s:layer_status()
@@ -161,7 +162,7 @@ function! s:define_command()
     command! -nargs=0 -bar LayerInstall call s:layer_install()
 endfunction
 
-function! s:add_topic(...)
+function! s:include_topic(...)
     if a:0 == 0
         return s:err('Argument missing: Topic name(s) required.')
     endif
@@ -188,16 +189,69 @@ function! s:add_topic(...)
     call s:err('Options not supported now. Sorry for that.')
 endfunction
 
-function! s:add_layer(...)
+function! s:exclude_topic(...)
+    if a:0 == 0
+        return s:err('Argument missing: Topic name(s) required.')
+    endif
+
+    if a:0 == 1
+        let l:topic_name = eval(a:1)
+        let l:index_topic2layers = index(keys)
+        let l:index_topics_loaded = index(s:topics_loaded, l:topic_name)
+        if index(keys(s:topic2layers), l:topic_name) < 0 ||
+                    \ l:index_topics_loaded >= 0
+            return 0
+        endif
+
+        let l:topic_layers = s:topic2layers[l:topic_name]
+        for l:layer_name in l:topic_layers
+            let l:cmd = "ELayer '" . l:topic_name . '/' . l:layer_name . "'"
+            execute l:cmd
+        endfor
+
+        unlet s:topic2layers[l:topic_name]
+        call remove(s:topics_loaded, l:index_topics_loaded)
+        return 1
+    endif
+
+    call s:err('Options not supported now. Sorry for that.')
+endfunction
+
+function! s:include_layer(...)
     if a:0 == 0
         return s:err('Argument missing: layer name(s) required.')
-    elseif a:0 == 1
-        if index(g:layers_loaded, eval(a:1)) < 0
-            call add(g:layers_loaded, eval(a:1))
-        endif
-    else
-        call s:err('Options not supported now. Sorry for that.')
     endif
+
+    if a:0 == 1
+        let l:layer = eval(a:1)
+
+        if index(g:layers_loaded, l:layer) >= 0
+            return 1
+        endif
+
+        return add(g:layers_loaded, eval(a:1))
+    endif
+
+    return s:err('Options not supported now. Sorry for that.')
+endfunction
+
+function! s:exclude_layer(...)
+    if a:0 == 0
+        return s:err('Argument missing: layer name(s) required.')
+    endif
+
+    if a:0 == 1
+        let l:layer = eval(a:1)
+        let l:index_layers_loaded = index(g:layers_loaded, l:layer)
+
+        if l:index_layers_loaded < 0
+            return 1
+        endif
+
+        return remove(g:layers_loaded, l:index_layers_loaded)
+    endif
+
+    return s:err('Options not supported now. Sorry for that.')
 endfunction
 
 let s:TYPE = {
@@ -206,28 +260,28 @@ let s:TYPE = {
             \   'dict':    type({}),
             \   'funcref': type(function('call'))
             \ }
-
-
-let g:layervim_elements = []
-
-function! s:add_element(...)
+" store all loaded plugins
+let g:layervim_plugins = {}
+function! s:include_plugin(...)
     if a:0 == 0
         return s:err('Argument missing: element name(s) required.')
     else
         let l:str = List2String(a:000)
-        if index(g:layervim_elements, l:str) < 0
-            call add(g:layervim_elements, l:str)
-        endif
+        let l:plugin_name = eval(a:1)
+        " override the same name plugin
+        let g:layervim_plugins[l:plugin_name] = l:str
     endif
 endfunction
 
-let g:layervim_exclude = []
-function! s:exclude_elements(...)
+function! s:exclude_plugin(...)
     if a:0 == 0
         return s:err('Argument missing: element name(s) required.')
     else
         let l:str = List2String(a:000)
-        call add(g:layervim_exclude, l:str)
+        let l:plugin_name = eval(a:1)
+        if index(keys(g:layervim_plugins), l:plugin_name) >= 0
+            unlet g:layervim_plugins[l:plugin_name]
+        endif
     endif
 endfunction
 
@@ -419,10 +473,8 @@ function! layervim_core_config#end()
 endfunction
 
 function! s:filter_and_invoke_plug()
-    for e in g:layervim_elements
-        if !(index(g:layervim_exclude, split(e, ',')[0]) > -1)
-            execute 'Plug ' . e
-        endif
+    for l:plugin in values(g:layervim_plugins)
+        execute 'Plug ' . l:plugin
     endfor
 endfunction
 
