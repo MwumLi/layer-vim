@@ -36,6 +36,14 @@ function! layervim_core_config#LayerLoaded(layer) abort
     endif
 endfunction
 
+function! layervim_core_config#PluginLoaded(plugin) abort
+    if index(s:layervim_plugins_key, a:plugin) > -1
+        return 1
+    else
+        return 0
+    endif
+endfunction
+
 silent function! s:source_echom(file) abort
     if filereadable(expand(a:file))
         execute 'source ' . fnameescape(a:file)
@@ -476,6 +484,7 @@ function! s:filter_and_invoke_plug()
     for l:plugin in values(g:layervim_plugins)
         execute 'Plug ' . l:plugin
     endfor
+    let s:layervim_plugins_key = keys(g:layervim_plugins)
 endfunction
 
 function! s:load_layer_packages()
