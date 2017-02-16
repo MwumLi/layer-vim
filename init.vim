@@ -39,6 +39,6 @@ set runtimepath+=$HOME/.layer-vim/core
 " load public global function from lib
 execute "source " . g:layervim_dir . '/lib/functions.vim'
 
-call layervim_core_config#begin()
+call layervim_core#begin()
 
-call layervim_core_config#end()
+call layervim_core#end()

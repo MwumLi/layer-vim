@@ -19,7 +19,7 @@ let s:topics_loaded = []
 " ********End**** Define Script variable and global variabl
 
 " argument plugin is the vim plugin's name
-function! layervim_core_config#IsDir(plugin) abort
+function! layervim_core#IsDir(plugin) abort
     let l:plugin_path = PathResolve(g:layervim_plugin_path, a:plugin)
     if isdirectory(expand(l:plugin_path))
         return 1
@@ -28,7 +28,7 @@ function! layervim_core_config#IsDir(plugin) abort
     endif
 endfunction
 
-function! layervim_core_config#LayerLoaded(layer) abort
+function! layervim_core#LayerLoaded(layer) abort
     if index(g:layers_loaded, a:layer) > -1
         return 1
     else
@@ -36,7 +36,7 @@ function! layervim_core_config#LayerLoaded(layer) abort
     endif
 endfunction
 
-function! layervim_core_config#PluginLoaded(plugin) abort
+function! layervim_core#PluginLoaded(plugin) abort
     if index(s:layervim_plugins_key, a:plugin) > -1
         return 1
     else
@@ -125,7 +125,7 @@ function! s:check_vim_plug(plug_path)
     endif
 endfunction
 
-function! layervim_core_config#begin()
+function! layervim_core#begin()
 
     let l:vim_plug_path = '~/.vim/autoload/plug.vim'
     let l:nvim_plug_path = '~/.local/share/nvim/site/autoload/plug.vim'
@@ -430,7 +430,7 @@ function! s:set_leader_and_localleader()
     endif
 endfunction
 
-function! layervim_core_config#end()
+function! layervim_core#end()
 
     let l:dot_layervim_exist = s:check_dot_layervim()
 
