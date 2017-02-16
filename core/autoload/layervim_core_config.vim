@@ -275,7 +275,7 @@ function! s:include_plugin(...)
         return s:err('Argument missing: element name(s) required.')
     else
         let l:str = List2String(a:000)
-        let l:plugin_name = eval(a:1)
+        let l:plugin_name = eval(split(a:1, ',')[0])
         " override the same name plugin
         let g:layervim_plugins[l:plugin_name] = l:str
     endif
