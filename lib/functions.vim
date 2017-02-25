@@ -52,3 +52,26 @@ function! List2String(list)
     endfor
     return str
 endfunction
+
+let s:TYPE = {
+\   'string':  type(''),
+\   'list':    type([]),
+\   'dict':    type({}),
+\   'funcref': type(function('call'))
+\ }
+
+function! IsDict(v)
+  return type(a:v) == s:TYPE.dict
+endfunction
+
+function! IsList(v)
+  return type(a:v) == s:TYPE.list
+endfunction
+
+function! IsString(v)
+  return type(a:v) == s:TYPE.string
+endfunction
+
+function IsFunc(v)
+  return type(a:v) == s:TYPE.funcref
+endfunction
