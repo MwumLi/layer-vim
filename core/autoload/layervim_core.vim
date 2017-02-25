@@ -161,8 +161,8 @@ function! s:define_command()
     command! -nargs=+ -bar Layer call s:include_layer(<f-args>)
     command! -nargs=+ -bar ELayer call s:exclude_layer(<f-args>)
 
-    command! -nargs=+ -bar Plugin call s:include_plugin(<f-args>)
-    command! -nargs=+ -bar EPlugin call s:exclude_plugin(<f-args>)
+    command! -nargs=+ -bar Plugin call s:include_plugin(<args>)
+    command! -nargs=+ -bar EPlugin call s:exclude_plugin(<args>)
 
     command! -nargs=0 -bar LayerClean call s:layer_clean()
     command! -nargs=0 -bar LayerStatus call s:layer_status()
@@ -183,8 +183,9 @@ function! s:include_topic(...)
         endif
 
         let l:topic_path = PathResolve(s:layervim_layers_dir, l:topic_name, 'topic.vim')
+        " 如果自定义加载不满意,那么加载当前 Topic 中的所有 Layer
         if !Source(l:topic_path)
-            let l:topic_layers = s:topic2layers[eval(a:1)]
+            let l:topic_layers = s:topic2layers[l:topic_name]
             for l:layer_name in l:topic_layers
                 let l:cmd = "Layer '" . l:topic_name . '/' . l:layer_name . "'"
                 execute l:cmd
@@ -204,10 +205,9 @@ function! s:exclude_topic(...)
 
     if a:0 == 1
         let l:topic_name = eval(a:1)
-        let l:index_topic2layers = index(keys)
         let l:index_topics_loaded = index(s:topics_loaded, l:topic_name)
-        if index(keys(s:topic2layers), l:topic_name) < 0 ||
-                    \ l:index_topics_loaded >= 0
+        if has_key(s:topic2layers, l:topic_name) < 0 ||
+                    \ l:index_topics_loaded < 0
             return 0
         endif
 
@@ -217,7 +217,6 @@ function! s:exclude_topic(...)
             execute l:cmd
         endfor
 
-        unlet s:topic2layers[l:topic_name]
         call remove(s:topics_loaded, l:index_topics_loaded)
         return 1
     endif
@@ -237,7 +236,7 @@ function! s:include_layer(...)
             return 1
         endif
 
-        return add(g:layers_loaded, eval(a:1))
+        return add(g:layers_loaded, l:layer)
     endif
 
     return s:err('Options not supported now. Sorry for that.')
@@ -262,35 +261,25 @@ function! s:exclude_layer(...)
     return s:err('Options not supported now. Sorry for that.')
 endfunction
 
-let s:TYPE = {
-            \   'string':  type(''),
-            \   'list':    type([]),
-            \   'dict':    type({}),
-            \   'funcref': type(function('call'))
-            \ }
 " store all loaded plugins
 let g:layervim_plugins = {}
-function! s:include_plugin(...)
-    if a:0 == 0
-        return s:err('Argument missing: element name(s) required.')
-    else
-        let l:str = List2String(a:000)
-        let l:plugin_name = eval(split(a:1, ',')[0])
-        " override the same name plugin
-        let g:layervim_plugins[l:plugin_name] = l:str
-    endif
+function! s:include_plugin(plugin_name, ...)
+  " override the same name plugin 
+  if has_key(g:layervim_plugins, a:plugin_name) > 0
+    let l:option = g:layervim_plugins[a:plugin_name]
+  elseif a:0 > 0
+    let l:option = a:1
+  else 
+    let l:option = {}
+  endif
+  let g:layervim_plugins[a:plugin_name] = a:0>0 ? a:1 : {}
 endfunction
 
-function! s:exclude_plugin(...)
-    if a:0 == 0
-        return s:err('Argument missing: element name(s) required.')
-    else
-        let l:str = List2String(a:000)
-        let l:plugin_name = eval(a:1)
-        if index(keys(g:layervim_plugins), l:plugin_name) >= 0
-            unlet g:layervim_plugins[l:plugin_name]
-        endif
-    endif
+let g:layervim_excludes = []
+function! s:exclude_plugin(name)
+  if index(g:layervim_excludes, a:name) < 0
+    call add(g:layervim_excludes, a:name)
+  endif
 endfunction
 
 function! s:layer_install()
@@ -480,13 +469,6 @@ function! layervim_core#end()
 
 endfunction
 
-function! s:filter_and_invoke_plug()
-    for l:plugin in values(g:layervim_plugins)
-        execute 'Plug ' . l:plugin
-    endfor
-    let s:layervim_plugins_key = keys(g:layervim_plugins)
-endfunction
-
 function! s:load_layer_packages()
     let l:layers_loaded = []
     for l:layer in g:layers_loaded
@@ -497,6 +479,30 @@ function! s:load_layer_packages()
         endif
     endfor
     let g:layers_loaded = l:layers_loaded
+endfunction
+
+function! s:filter_and_invoke_plug()
+    for l:plugin in keys(g:layervim_plugins)
+      if index(g:layervim_excludes, l:plugin) < 0
+        let l:option = g:layervim_plugins[l:plugin]
+
+        if IsString(l:option)
+          Plug l:plugin, l:option
+          continue
+        endif
+
+        if !IsDict(l:option)
+          continue
+        endif
+
+        if empty(keys(l:option))
+          Plug l:plugin
+        else
+          Plug l:plugin, l:option
+        endif
+      endif
+    endfor
+    let s:layervim_plugins_key = keys(g:layervim_plugins)
 endfunction
 
 function! s:load_layer_config()
