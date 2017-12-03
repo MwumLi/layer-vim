@@ -23,6 +23,16 @@ An elegant solution to organize vim plugins and resources
 
         cp ~/.layer-vim/template/project-layervim.vim yourProjectRoot/.layervim
 
+## 引入外部 layer 仓库
+
+加载外部 layer 仓库，配置环境变量 `LAYERVIM_LAYERS_PATH`:  
+
+	export LAYERVIM_LAYERS_PATH=$HOME/.vim/layers
+
+自动安装外部 layer 仓库, 配置环境变量 `LAYERVIM_LAYERS_REPO_URI`, 比如:  
+
+	export LAYERVIM_LAYERS_REPO_URI='https://github.com/MwumLi/ifmicro-layers.git'
+
 ## 介绍
 
 layer-vim 是一套优雅的的 vim 配置方案, 整个架构基于 Layer 的概念  
