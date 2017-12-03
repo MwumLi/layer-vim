@@ -167,6 +167,7 @@ function! layervim_core_config#begin()
 endfunction
 
 function! s:define_command()
+    command! -nargs=+ -bar Topic call s:add_topic(<f-args>)
     command! -nargs=+ -bar Layer call s:add_layer(<f-args>)
 
     " MP means MyPlugin
@@ -178,6 +179,17 @@ function! s:define_command()
     command! -nargs=0 -bar LayerStatus call s:layer_status()
     command! -nargs=0 -bar LayerUpdate call s:layer_update()
     command! -nargs=0 -bar LayerInstall call s:layer_install()
+endfunction
+
+function! s:add_topic(...)
+    if a:0 == 0
+        return s:err('Argument missing: Topic name(s) required.')
+    elseif a:0 == 1
+        let l:topic_path = s:path_resolve(g:g:layervim_dir, s:layervim_layers_dir, eval(a:1), 'topic.vim')
+        s:Source(l:topic_path)
+    else
+        call s:err('Options not supported now. Sorry for that.')
+    endif
 endfunction
 
 function! s:add_layer(...)
